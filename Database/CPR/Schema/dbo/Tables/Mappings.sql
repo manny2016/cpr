@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Mappings]
+(
+	[Name] NVARCHAR(100) NOT NULL,
+	[From] NVARCHAR(100) NOT NULL,
+	[To] NVARCHAR(200)
+		CONSTRAINT [PK_Mappings] PRIMARY KEY CLUSTERED ([Name],[From])
+)

@@ -2,13 +2,14 @@
 
 namespace CPR.DataHelper
 {
-    using Microsoft.Extensions.Logging;
+
     using Org.Joey.Common;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
     using CPR.Data.Import;
-    
+    using System.Collections.Generic;
+    using CPR.Data.Import.Models;
 
     class Program
     {
@@ -19,7 +20,7 @@ namespace CPR.DataHelper
             {
                 collection.AddJsonConfiguration();
                 collection.AddImportService();
-            });
+            });           
             StartAuto();
         }
         static void StartAuto()

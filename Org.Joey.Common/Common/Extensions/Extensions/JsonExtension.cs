@@ -62,7 +62,7 @@
                 return result;
 
             }
-            catch (Exception ex)
+            catch 
             {
                 return default(T);
             }
@@ -75,7 +75,7 @@
                 return result;
 
             }
-            catch (Exception ex)
+            catch
             {
                 return default(IEnumerable<T>);
             }

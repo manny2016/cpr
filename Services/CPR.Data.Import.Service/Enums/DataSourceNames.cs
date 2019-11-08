@@ -9,6 +9,6 @@ namespace CPR.Data.Import
         Chat = 1,
         MSXTQL = 2,
         Avaya = 3,
-        MSXWon = 4
+        MSXSQO = 4
     }
 }

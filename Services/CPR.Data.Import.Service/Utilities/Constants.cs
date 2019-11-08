@@ -7,18 +7,6 @@ namespace CPR.Data.Import
 {
     public static class Constants
     {
-        public static readonly Dictionary<DataSourceNames, Descriptor[]> ExcelDataStructureMapping =
-            new Dictionary<DataSourceNames, Descriptor[]>()
-            {
-                { DataSourceNames.Chat,new Descriptor[]{ } },
-                { DataSourceNames.Avaya,new Descriptor[]{ } },
-                { DataSourceNames.MSXWon,new Descriptor[]{ } },
-                { DataSourceNames.MSXTQL,new Descriptor[]{ } },
-            };
-
-        public static readonly Dictionary<DataSourceNames, string[]> DataSourceMapping = new Dictionary<DataSourceNames, string[]>()
-        {
-
-        };
+        
     }
 }

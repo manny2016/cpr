@@ -8,3 +8,4 @@ obj
 *.dbmdl
 *.sqlproj.user
 *.csproj.user
+*.jfm
