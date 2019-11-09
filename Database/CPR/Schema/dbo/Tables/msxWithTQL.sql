@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[msxWithTQL]
 (
-	BatchJobId			BIGINT NOT NULL 
-		CONSTRAINT [FK_msxWithTQL_BatchJobs_Id] FOREIGN KEY REFERENCES [dbo].[BatchJobs] (Id),
 	[LeadId]			NVARCHAR(50),
+	BatchJobId			BIGINT NOT NULL 
+		CONSTRAINT [FK_msxWithTQL_BatchJobs_Id] FOREIGN KEY REFERENCES [dbo].[BatchJobs] (Id),	
 	[Agent]				NVARCHAR(50),
 	[Country]			NVARCHAR(50),
 	[Status]			NVARCHAR(50),

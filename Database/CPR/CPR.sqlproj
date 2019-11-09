@@ -64,6 +64,7 @@
     <Folder Include="Schema\dbo\Views" />
     <Folder Include="Schema\dbo\Functions" />
     <Folder Include="Scripts" />
+    <Folder Include="Schema\dbo\Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema\dbo\Tables\BatchJobs.sql" />
@@ -72,6 +73,10 @@
     <Build Include="Schema\dbo\Tables\msxWithTQL.sql" />
     <Build Include="Schema\dbo\Tables\msxWithSQO.sql" />
     <Build Include="Schema\dbo\Tables\Mappings.sql" />
+    <Build Include="Schema\dbo\Types\ChatStructure.sql" />
+    <Build Include="Schema\dbo\Types\AvayatStructure.sql" />
+    <Build Include="Schema\dbo\Types\msxWithSQOStructure.sql" />
+    <Build Include="Schema\dbo\Types\msxWithTQLStructure.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Initializing.sql" />
