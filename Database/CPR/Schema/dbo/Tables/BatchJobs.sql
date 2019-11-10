@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[BatchJobs]
 (
-	[Id]					BIGINT NOT NULL  IDENTITY(1, 1) PRIMARY KEY,
+	[Id]					NVARCHAR(50) PRIMARY KEY,
 	[Agent]					NVARCHAR(50),
-	[FileName]				NVARCHAR(100),
-	[MD5]					NVARCHAR(100),
-	[CreatedDateTime]		BIGINT
+	[CreatedDateTime]		BIGINT,
+	[AttachInfo]			NVARCHAR(MAX),
+	[Metadata]				NVARCHAR(MAX)		
 )

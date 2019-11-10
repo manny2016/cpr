@@ -14,7 +14,7 @@ namespace CPR.Data.Import.Models
         }
         public IProcessService<ExcelSignleRow> GenerateProcessService()
         {
-            return new DataImportService(this);
+            return new DataImportService(this, IoC.GetService<IDataImportDirectly>());
         }
     }
 }

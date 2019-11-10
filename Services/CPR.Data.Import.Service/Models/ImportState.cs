@@ -14,13 +14,13 @@ namespace CPR.Data.Import.Models
         {
             get
             {
-                return "CPR Data Import Process";
+                return $"[{System.Net.Dns.GetHostName()}]CPR Data Processing";
             }
         }
 
         public override IProcessingResultService<ExcelSignleRow> GenerateProcessingResultService()
         {
-            return new DataImportResultService();
+            return new DataImportResultService(IoC.GetService<IDataImportDirectly>());
         }
     }
 }

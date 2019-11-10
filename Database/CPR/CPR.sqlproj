@@ -60,7 +60,7 @@
     <Folder Include="Schema" />
     <Folder Include="Schema\dbo" />
     <Folder Include="Schema\dbo\Tables" />
-    <Folder Include="Schema\dbo\Produces" />
+    <Folder Include="Schema\dbo\StoredProcedures" />
     <Folder Include="Schema\dbo\Views" />
     <Folder Include="Schema\dbo\Functions" />
     <Folder Include="Scripts" />
@@ -77,6 +77,11 @@
     <Build Include="Schema\dbo\Types\AvayatStructure.sql" />
     <Build Include="Schema\dbo\Types\msxWithSQOStructure.sql" />
     <Build Include="Schema\dbo\Types\msxWithTQLStructure.sql" />
+    <Build Include="Schema\dbo\StoredProcedures\spImportAvaya.sql" />
+    <Build Include="Schema\dbo\StoredProcedures\spImportChat.sql" />
+    <Build Include="Schema\dbo\StoredProcedures\spImportmsxTQL.sql" />
+    <Build Include="Schema\dbo\StoredProcedures\spImportmsxSQO.sql" />
+    <Build Include="Schema\dbo\Tables\Schedule.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Initializing.sql" />
