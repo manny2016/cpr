@@ -41,6 +41,20 @@ namespace CPR.Data.Import
             {
                 return DataSourceNames.MSXTQL;
             }
+            if (Constants.DirectVolumeTeamLevel.Any(o =>
+            {
+                return fileNmae.IndexOf(o, System.StringComparison.OrdinalIgnoreCase) >= 0;
+            }))
+            {
+                return DataSourceNames.DirectVolumeTeamLevel;
+            }
+            if (Constants.PhoneVolume.Any(o =>
+            {
+                return fileNmae.IndexOf(o, System.StringComparison.OrdinalIgnoreCase) >= 0;
+            }))
+            {
+                return DataSourceNames.PhoneVolume;
+            }
             return null;
         }
 
@@ -74,17 +88,30 @@ namespace CPR.Data.Import
                 Value = batchJobId
             });
         }
-        private static void FixVolume(DataSourceNames source, List<PropertyObject> properties)
+
+        public static bool PrimaryKeyRequired(this ExcelSignleRow row, DataSourceNames name)
         {
-            if (source == DataSourceNames.Chat)
+            switch (name)
             {
-                properties.Add(new PropertyObject()
-                {
-                    Descriptor = new PropertyDescriptor() { FiledName = "BatchJobId", Type = System.Data.SqlDbType.Int },
-                    Value = 1
-                });
+                case DataSourceNames.Avaya:
+                case DataSourceNames.Chat:
+                    var agent = row.Properties.TryFirst(o => o.Descriptor.FiledName.Equals("Agent"))?.Value?.ToString();
+                    var skillSet = row.Properties.TryFirst(o => o.Descriptor.FiledName.Equals("SkillSet"))?.Value?.ToString();
+                    bool bCreatedDateTime = DateTime.TryParse(
+                        row.Properties.TryFirst(o => o.Descriptor.FiledName.Equals("CreatedDateTime"))?.Value?.ToString(),
+                         out DateTime dt);
+                    var createdDateTime = row.Properties.TryFirst(o => o.Descriptor.FiledName.Equals("CreatedDateTime"))?.Value?.ToString();
+                    return string.IsNullOrEmpty(agent) == false && string.IsNullOrEmpty(skillSet) == false && bCreatedDateTime == true;
+                case DataSourceNames.MSXSQO:
+                    var opportunityId = row.Properties.TryFirst(o => o.Descriptor.FiledName.Equals("OpportunityId"))?.Value?.ToString();
+                    return string.IsNullOrEmpty(opportunityId) == false;
+                case DataSourceNames.MSXTQL:
+                    var leadId = row.Properties.TryFirst(o => o.Descriptor.FiledName.Equals("OpportunityId"))?.Value?.ToString();
+                    return string.IsNullOrEmpty(leadId) == false;
             }
+            return false;
         }
+
 
     }
 }

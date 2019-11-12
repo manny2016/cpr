@@ -75,7 +75,11 @@ USING(
 	('chatAgent->Agent','wic_wux_rubylong','Ruby Long'),
 	('chatAgent->Agent','wic_wux_wilsontan','Wilson Tan'),
 	('chatAgent->Agent','wic_wux_winnieluo','Winnie Luo'),
-	('chatAgent->Agent','wix_wux_vickyjiang','Vicky Jiang')
+	('chatAgent->Agent','wix_wux_vickyjiang','Vicky Jiang'),
+
+	('cssDispostion->TQL','TQL - Routed to Field','TQL'             ),
+	('cssDispostion->TQL','TQL - Routed to Inside Sales','TQL'      ),
+	('cssDispostion-TQL','TQL - Routed to Partner','TQL'           )
 
 )[source]([Name],[From],[To])
 ON [target].[Name]=[source].[Name] AND [target].[From] = [source].[From]

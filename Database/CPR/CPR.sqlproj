@@ -82,6 +82,11 @@
     <Build Include="Schema\dbo\StoredProcedures\spImportmsxTQL.sql" />
     <Build Include="Schema\dbo\StoredProcedures\spImportmsxSQO.sql" />
     <Build Include="Schema\dbo\Tables\Schedule.sql" />
+    <Build Include="Schema\dbo\Views\vTotalTalks.sql" />
+    <Build Include="Schema\dbo\Views\vMSXTql.sql" />
+    <Build Include="Schema\dbo\Views\vMSXSqo.sql" />
+    <Build Include="Schema\dbo\Views\vSetupPovit.sql" />
+    <Build Include="Schema\dbo\Views\vMergedMSX.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Initializing.sql" />

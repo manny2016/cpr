@@ -45,6 +45,7 @@ namespace CPR.Data.Import.Services
                         Logger.Error($"Not a vaild data source ({item.FileName}).");
                         continue;
                     }
+                    var count = 0;
                     foreach (var row in ExcelHelper.ReadExcel<ExcelSignleRow>(item.FileName, Convert, 1))
                     {
                         row.DataSourceName = source.Value;
@@ -59,8 +60,10 @@ namespace CPR.Data.Import.Services
                         row.Properties = row.Properties.Where(o => o.Descriptor != null).ToArray();
                         row.Fix(source.Value, this.directly.GetMappings());
                         row.DateTime = startRuning;
+                        count++;                     
                         pass(row);
                     }
+                    Logger.Warn($"Total Rows {count};{item.FileName}");
                 }
                 catch (IOException ex)
                 {

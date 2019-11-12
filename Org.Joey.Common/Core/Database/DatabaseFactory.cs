@@ -12,7 +12,7 @@ namespace Org.Joey.Common
         {
             TryGetConnectionString(out connectString);
             if (string.IsNullOrEmpty(connectString))
-                connectString = GenerateMSSqlConnectionString("asfp-pbi.database.windows.net", "reporting", "asfpd", "AsFp.Azure.2019");
+                connectString = GenerateMSSqlConnectionString("xx", "x", "x", "xx");
             return new SqlConnection(connectString);
         }
         private static string GenerateMSSqlConnectionString(string server, string database, string userid, string password)

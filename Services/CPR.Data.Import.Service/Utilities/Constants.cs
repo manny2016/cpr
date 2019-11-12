@@ -14,7 +14,7 @@ namespace CPR.Data.Import
             new SqlMetaData("SkillSet",SqlDbType.NVarChar,50),
             new SqlMetaData("Agent",SqlDbType.NVarChar,50) ,
             new SqlMetaData("CreatedDateTime",SqlDbType.BigInt),
-            new SqlMetaData("BatchJobId",SqlDbType.NVarChar,50),            
+            new SqlMetaData("BatchJobId",SqlDbType.NVarChar,50),
             new SqlMetaData("Volume",SqlDbType.Int)
         };
         public static readonly SqlMetaData[] ChatStructure = new SqlMetaData[] {
@@ -22,17 +22,17 @@ namespace CPR.Data.Import
             new SqlMetaData("Agent",SqlDbType.NVarChar,50) ,
             new SqlMetaData("CreatedDateTime",SqlDbType.BigInt),
             new SqlMetaData("BatchJobId",SqlDbType.NVarChar,50)
-            
+
         };
         public static readonly SqlMetaData[] msxWithSQOStructure = new SqlMetaData[] {
             new SqlMetaData("OpportunityId",SqlDbType.NVarChar,50),
-            new SqlMetaData("BatchJobId",SqlDbType.NVarChar,50),            
+            new SqlMetaData("BatchJobId",SqlDbType.NVarChar,50),
             new SqlMetaData("Agent",SqlDbType.NVarChar,50),
             new SqlMetaData("Country",SqlDbType.NVarChar,50),
             new SqlMetaData("Status",SqlDbType.NVarChar,50),
             new SqlMetaData("EstRevenue" ,SqlDbType.Money),
             new SqlMetaData("Currency",SqlDbType.NVarChar,50),
-            new SqlMetaData("SourceCampaign",SqlDbType.NVarChar,200),            
+            new SqlMetaData("SourceCampaign",SqlDbType.NVarChar,200),
             new SqlMetaData("CreatedDateTime" ,SqlDbType.BigInt )
         };
         public static readonly SqlMetaData[] msxWithTQLStructure = new SqlMetaData[] {
@@ -74,5 +74,7 @@ namespace CPR.Data.Import
         public static readonly string[] ChatValidStrings = new string[] { "chat" };
         public static readonly string[] msxTQLValidStrings = new string[] { "tql" };
         public static readonly string[] msxSQOValidStrings = new string[] { "sqo" };
+        public static readonly string[] DirectVolumeTeamLevel = new string[] {"team" };
+        public static readonly string[] PhoneVolume = new string[] { "phone" };
     }
 }
