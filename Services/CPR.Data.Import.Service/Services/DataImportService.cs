@@ -10,6 +10,8 @@ namespace CPR.Data.Import.Services
     using Org.Joey.Common.Models;
     using System.Linq;
     using System.Collections.Generic;
+    using Newtonsoft.Json.Linq;
+
     public class DataImportService : IProcessService<ExcelSignleRow>
     {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(DataImportService));
@@ -32,45 +34,88 @@ namespace CPR.Data.Import.Services
 
         public void Process(Action<ExcelSignleRow> pass, CancellationToken token)
         {
-            var jobs = GenernateBatchJob();
-            this.directly.SaveBatchJobs(jobs);
-            foreach (var item in jobs.FileEntities)
+            var job = GenernateBatchJob();
+            this.directly.SaveBatchJobs(job);
+            foreach (var item in job.FileEntities)
             {
-                try
+                var source = item.FileName.DetectDatasource();
+                if (source == null)
                 {
-                    var startRuning = DateTime.UtcNow;
-                    var source = item.FileName.DetectDatasource();
-                    if (source == null)
-                    {
-                        Logger.Error($"Not a vaild data source ({item.FileName}).");
-                        continue;
-                    }
-                    var count = 0;
-                    foreach (var row in ExcelHelper.ReadExcel<ExcelSignleRow>(item.FileName, Convert, 1))
-                    {
-                        row.DataSourceName = source.Value;
-                        row.BatchJob = jobs;
-                        var descriptors = Unity.GetDescriptor(source.Value);
-
-                        for (var i = 0; i < row.Properties.Length; i++)
-                        {
-                            var header = row.Properties[i].Descriptor.Header;
-                            row.Properties[i].Descriptor = descriptors.TryFirst(o => o.Header.Equals(header, StringComparison.OrdinalIgnoreCase));
-                        }
-                        row.Properties = row.Properties.Where(o => o.Descriptor != null).ToArray();
-                        row.Fix(source.Value, this.directly.GetMappings());
-                        row.DateTime = startRuning;
-                        count++;                     
-                        pass(row);
-                    }
-                    Logger.Warn($"Total Rows {count};{item.FileName}");
+                    Logger.Error($"Not a vaild data source ({item.FileName}).");
+                    continue;
                 }
-                catch (IOException ex)
+                if (Constants.IndividualDataSources.Any(o => o.Equals(source)))
                 {
-                    Logger.Error($"Excel file can't be read;{ex.Message}", ex);
-                    return;
+                    ReadIndividualDatasource(pass, job, item, source.Value);
+                }
+                if (Constants.TeamLevelDataSources.Any(o => o.Equals(source)))
+                {
+                    ReadTeamLevelDatasource(pass, job, item, source.Value);
+                }
+            }
+        }
+        private void ReadIndividualDatasource(Action<ExcelSignleRow> pass,
+            BatchJob jobs,
+            FileEntity item,
+            DataSourceNames source)
+        {
+            try
+            {
+                var startRuning = DateTime.UtcNow;
+
+                var count = 0;
+                foreach (var row in ExcelHelper.ReadExcel<ExcelSignleRow>(item.FileName, Convert, 0))
+                {
+                    row.DataSourceName = source;
+                    row.BatchJob = jobs;
+                    var descriptors = Unity.GetDescriptor(source);
+                    for (var i = 0; i < row.Properties.Length; i++)
+                    {
+                        var header = row.Properties[i].Descriptor.Header;
+                        row.Properties[i].Descriptor = descriptors.TryFirst(o => o.Header.Equals(header, StringComparison.OrdinalIgnoreCase));
+                    }
+                    row.Properties = row.Properties.Where(o => o.Descriptor != null).ToArray();
+                    row.Fix(source, this.directly.GetMappings());
+                    row.DateTime = startRuning;
+                    count++;
+                    pass(row);
                 }
 
+                Logger.Warn($"Total Rows {count};{item.FileName}");
+            }
+            catch (IOException ex)
+            {
+                Logger.Error($"Excel file can't be read;{ex.Message}", ex);
+                return;
+            }
+        }
+        private void ReadTeamLevelDatasource(Action<ExcelSignleRow> pass,
+            BatchJob job,
+            FileEntity item,
+            DataSourceNames source)
+        {
+            try
+            {
+                var startRuning = DateTime.UtcNow;
+                var startRowIndex = source == DataSourceNames.TeamLevelReport ? 19 : 1;
+                var startColumnIndex = source == DataSourceNames.TeamLevelReport ? 2 : 1;
+
+                foreach (var jMetadata in ExcelHelper.ReadExcel<JObject>(item.FileName, 0, startRowIndex, startColumnIndex))
+                {
+                    pass(new ExcelSignleRow()
+                    {
+                        BatchJob = job,
+                        DataSourceName = source,
+                        DateTime = startRuning,
+                        JMetadata = jMetadata,
+                        Properties = null,
+                    });
+                }
+            }
+            catch (IOException ex)
+            {
+                Logger.Error($"Excel file can't be read;{ex.Message}", ex);
+                return;
             }
         }
         public ExcelSignleRow Convert(int index, string[] headers, object[] objects)

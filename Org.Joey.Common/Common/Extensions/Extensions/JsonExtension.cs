@@ -67,6 +67,19 @@
                 return default(T);
             }
         }
+        public static T TryGetValue<T>(this JObject JObject, string jpath)
+        {
+            try
+            {
+                var result = JObject.SelectToken(jpath).Value<T>();
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                return default(T);
+            }
+        }
         public static IEnumerable<T> TryGetValues<T>(this JObject JObject, string jpath)
         {
             try

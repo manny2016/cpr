@@ -25,8 +25,8 @@ namespace CPR.Data.Import.Services
         {
             var queryString = "SELECT TOP 1 NextTime FROM [dbo].[Schedule] (NOLOCK) WHERE Name=@name";
             using (var database = DatabaseFactory.GenerateDatabase())
-            {   
-                return database.ExecuteScalar<long?>(queryString, new { @name = name});
+            {
+                return database.ExecuteScalar<long?>(queryString, new { @name = name });
             }
         }
 
@@ -40,41 +40,90 @@ namespace CPR.Data.Import.Services
             }
             foreach (var group in records.GroupBy(o => o.DataSourceName))
             {
-                using (var database = DatabaseFactory.GenerateDatabase())
+                if (Constants.IndividualDataSources.Any(o => o.Equals(group.Key)))
                 {
-                    try
-                    {
-                        var array = group.Select(o => Unity.Convert(o, group.Key)).Where(o => o != null);
-                        if (array == null || array.Count().Equals(0))
-                        {
-                            continue;
-                        }
-                        if (database.State != ConnectionState.Open)
-                            database.Open();
-                        var command = database.CreateCommand();
-                        command.CommandText = Constants.StoredProcedureNames[group.Key];
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.CommandTimeout = 60 * 60;
-                        command.Parameters.Add(new SqlParameter()
-                        {
-                            SqlDbType = SqlDbType.Structured,
-                            TypeName = Constants.StructureNames[group.Key],
-                            Value = group.Select(o => Unity.Convert(o, group.Key)).Where(o => o != null),
-                            ParameterName = "@data"
-                        });
-                        var retVal = command.ExecuteNonQuery();
-                        Logger.Info($"{retVal} records imported.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex.Message, ex);
-                    }
-                    finally
-                    {
-                        if (database.State != ConnectionState.Closed)
-                            database.Close();
-                    }
+                    ImportIndividualData(group.ToList(), group.Key);
                 }
+                if (Constants.TeamLevelDataSources.Any(o => o.Equals(group.Key)))
+                {
+                    ImportTeamLevelData(group.ToList(), group.Key);
+                }
+            }
+        }
+        public void ImportTeamLevelData(IEnumerable<ExcelSignleRow> records, DataSourceNames source)
+        {
+            using (var database = DatabaseFactory.GenerateDatabase())
+            {
+                try
+                {
+                    var array = records.Select(o => Unity.Convertfrom(o)).Fix().Select(ctx => Unity.Convert(ctx, source))
+                        .Where(o => o != null);
+                    if (database.State != ConnectionState.Open)
+                        database.Open();
+                    var command = database.CreateCommand();
+                    command.CommandText = Constants.StoredProcedureNames[source];
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 60 * 60;
+                    command.Parameters.Add(new SqlParameter()
+                    {
+                        SqlDbType = SqlDbType.Structured,
+                        TypeName = Constants.StructureNames[source],
+                        Value = array,
+                        ParameterName = "@data"
+                    });
+                    var retVal = command.ExecuteNonQuery();
+                    Logger.Info($"{retVal} records imported.");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+                }
+                finally
+                {
+                    if (database.State != ConnectionState.Closed)
+                        database.Close();
+                }
+            }
+        }
+        private void ImportIndividualData(IEnumerable<ExcelSignleRow> records, DataSourceNames source)
+        {
+            using (var database = DatabaseFactory.GenerateDatabase())
+            {
+                try
+                {
+                    var array = records.Select(o => Unity.Convert(o, source)).Where(o => o != null);
+                    if (array == null || array.Count().Equals(0))
+                    {
+                        Logger.Warn("No records need to import");
+                        return;
+                    }
+                    if (database.State != ConnectionState.Open)
+                        database.Open();
+                    var command = database.CreateCommand();
+                    command.CommandText = Constants.StoredProcedureNames[source];
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 60 * 60;
+                    command.Parameters.Add(new SqlParameter()
+                    {
+                        SqlDbType = SqlDbType.Structured,
+                        TypeName = Constants.StructureNames[source],
+                        Value = array,
+                        ParameterName = "@data"
+                    });
+                    var retVal = command.ExecuteNonQuery();
+                    Logger.Info($"{retVal} records imported.");
+                }
+
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+                }
+                finally
+                {
+                    if (database.State != ConnectionState.Closed)
+                        database.Close();
+                }
+
             }
         }
         public void SaveBatchJobs(BatchJob model)
@@ -96,7 +145,7 @@ WHEN NOT MATCHED BY TARGET THEN
 	VALUES([source].[Id],[source].[Agent],[source].[CreatedDateTime],[source].[AttachInfo],[source].[Metadata]);
 ";
             using (var database = DatabaseFactory.GenerateDatabase())
-            {             
+            {
                 database.Execute(queryString, new
                 {
                     @id = model.Id,

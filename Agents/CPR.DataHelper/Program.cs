@@ -13,29 +13,32 @@ namespace CPR.DataHelper
 
     using Microsoft.Extensions.DependencyInjection;
     using System.Linq;
+    using Newtonsoft.Json.Linq;
+    using System.Linq;
     class Program
     {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(Program));
         static void Main(string[] args)
         {
+            var jObject = Strings.JProperites.DeserializeToObject<JObject>();
+            var properties = string.Join(",", jObject.Properties().Select((ctx) =>
+            {
+                return string.Format(@"(
+    SELECT[JValue] FROM
+    OPENJSON(Metadata)
+    WITH([JValue] NVARCHAR(MAX) '$.\""{0}\""')
+) AS[{1}]", ctx.Name, ctx.Name);
+            }));
+
+
+
+
             IoC.ConfigureServiceProvider(null, (collection) =>
             {
                 collection.AddJsonConfiguration();
                 collection.AddImportService();
                 collection.AddMemoryCache();
             });
-
-            var team = @"D:\Manny\online\Repos\CPR Reporting\8-10data\8-10data\Team Level\Chat,TQL,DirectVolumeTeamLevel(8-10).xlsx";
-            var phone = @"D:\Manny\online\Repos\CPR Reporting\8-10data\8-10data\Team Level\PhoneVolumeTeamLevel(8-10).xlsx";
-            ExcelHelper.ReadExcel(team);
-            ExcelHelper.ReadExcel<object>(team, (index, headers, array) =>
-            {
-                var header = string.Join("\t", headers);
-                var values = string.Join("\t", array);
-                Logger.Info($"\r\n{header}\r\n{values}");
-                return new object();
-            }, 0, 19, 2).ToList();
-
             StartAuto();
         }
         static void StartAuto()

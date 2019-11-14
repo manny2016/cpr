@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using OfficeOpenXml;
     using System;
-    using System.Xml.Serialization;
+    using Newtonsoft.Json.Linq;
 
     public class ExcelHelper
     {
@@ -37,15 +37,39 @@
 
             }
         }
-        public static void ReadExcel(string excel)
+
+        public static IEnumerable<JObject> ReadExcel<T>(
+            string excel,
+            int sheetIndex = 0,
+            int startRowIndex = 1,
+            int startColumnIndex = 1)
         {
+
             using (var package = new ExcelPackage(new System.IO.FileInfo(excel)))
             {
-                var table = package.Workbook.Worksheets[0].PivotTables[0].PivotTableXml;
-                
-                
-                     
+                var worksheet = package.Workbook.Worksheets[sheetIndex];
+                var columns = worksheet.Dimension.Columns;
+                var headers = new string[columns];
 
+                for (int index = startColumnIndex; index <= columns; index++)
+                {
+                    headers[index - startColumnIndex] = worksheet.Cells[startRowIndex, index].Value?.ToString();
+                }
+                for (var row = startRowIndex + 1; row <= worksheet.Dimension.Rows; row++)
+                {
+                    var jObject = new JObject();
+                    var rangs = new string[columns];
+                    for (int cel = startColumnIndex; cel < columns; cel++)
+                    {
+                        if (headers[cel - startColumnIndex] != null)
+                        {
+                            var name = headers[cel - startColumnIndex];
+                            var value = worksheet.Cells[row, cel].Value?.ToString();
+                            jObject.Add(name, value);
+                        }
+                    }
+                    yield return jObject;
+                }
             }
         }
     }

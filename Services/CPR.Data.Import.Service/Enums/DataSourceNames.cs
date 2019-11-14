@@ -10,7 +10,7 @@ namespace CPR.Data.Import
         MSXTQL = 2,
         Avaya = 3,
         MSXSQO = 4,
-        DirectVolumeTeamLevel = 5,
+        TeamLevelReport = 5,
         PhoneVolume = 6
     }
 }

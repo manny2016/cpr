@@ -87,6 +87,14 @@
     <Build Include="Schema\dbo\Views\vMSXSqo.sql" />
     <Build Include="Schema\dbo\Views\vSetupPovit.sql" />
     <Build Include="Schema\dbo\Views\vMergedMSX.sql" />
+    <Build Include="Schema\dbo\Tables\TeamLevelReport.sql" />
+    <Build Include="Schema\dbo\Tables\TeamLevelPhoneVolume.sql" />
+    <Build Include="Schema\dbo\StoredProcedures\spImportTeamLevelReport.sql" />
+    <Build Include="Schema\dbo\Types\TeamLevelReportStructure.sql" />
+    <Build Include="Schema\dbo\Types\TeamLevelPhoneVolumeStructure.sql" />
+    <Build Include="Schema\dbo\StoredProcedures\spImportTeamLevelPhoneVolume.sql" />
+    <Build Include="Schema\dbo\Views\vTeamLevelReport.sql" />
+    <Build Include="Schema\dbo\Views\vExpandTeamLevelReportfromJsonMetadata.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Initializing.sql" />
